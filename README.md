@@ -1,5 +1,7 @@
 # Skyline — Live Weather
 
+**Live demo:** https://abdurrahmankhalid108-hash.github.io/skyline/
+
 A real-time weather dashboard that refreshes itself **every hour**, built with plain HTML/CSS/JS and [Open-Meteo](https://open-meteo.com/). No API key, no build step.
 
 ![Live weather dashboard](https://img.shields.io/badge/data-Open--Meteo-38bdf8)

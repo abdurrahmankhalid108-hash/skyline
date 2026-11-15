@@ -41,6 +41,16 @@ npm run dev
 
 Use a different port with `PORT=4000 npm start` (PowerShell: `$env:PORT=4000; npm start`).
 
+## Deployment
+
+The live site is hosted on **GitHub Pages**:
+
+- **URL:** https://abdurrahmankhalid108-hash.github.io/skyline/
+- **Workflow:** `.github/workflows/deploy-pages.yml`
+- Every push to `main` uploads the `public/` folder as a Pages artifact and redeploys — no build step needed.
+
+The Node server is only for local development; Pages serves the static files directly.
+
 ## How the hourly refresh works
 
 - After every successful load, a timer is scheduled for **60 minutes** (`REFRESH_MS`).

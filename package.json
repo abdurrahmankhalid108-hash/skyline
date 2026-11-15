@@ -1,0 +1,15 @@
+{
+  "name": "weather-now",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live weather dashboard with hourly auto-refresh, powered by Open-Meteo.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

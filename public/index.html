@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Real-time weather, refreshed automatically every hour." />
+    <meta name="theme-color" content="#f4f7fb" />
+    <title>Skyline — Live Weather</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛅</text></svg>"
+    />
+  </head>
+  <body data-theme="clear-day">
+    <div class="app">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Skyline home">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4.2" />
+              <path d="M12 2.5v2.2M12 19.3v2.2M4.3 4.3l1.6 1.6M18.1 18.1l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.3 19.7l1.6-1.6M18.1 5.9l1.6-1.6" />
+            </svg>
+          </span>
+          <span class="brand__text">
+            <span class="brand__name">Skyline</span>
+            <span class="brand__tag">live weather</span>
+          </span>
+        </a>
+
+        <div class="search-wrap">
+          <form class="search" id="search-form" autocomplete="off" role="search">
+            <svg class="search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <input
+              id="search-input"
+              name="q"
+              type="text"
+              placeholder="Search a city, e.g. Tokyo"
+              aria-label="Search for a city"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="false"
+              aria-controls="suggestions"
+              maxlength="80"
+            />
+            <button type="submit" class="search__go" aria-label="Search">
+              <span>Search</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </form>
+          <ul class="suggestions" id="suggestions" role="listbox" aria-label="Matching places" hidden></ul>
+        </div>
+
+        <div class="controls">
+          <span class="live-dot" title="Auto-refresh is on"><span aria-hidden="true"></span>Live</span>
+          <button type="button" class="icon-btn" id="locate-btn" title="Use my current location" aria-label="Use my current location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11Z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+          </button>
+          <button type="button" class="unit-btn" id="unit-toggle" title="Switch temperature unit">°C</button>
+        </div>
+      </header>
+
+      <div class="banner" id="error-banner" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 8v5M12 16.5v.01" />
+        </svg>
+        <span id="error-text">Something went wrong.</span>
+        <button type="button" class="banner__retry" id="retry-btn">Retry</button>
+      </div>
+
+      <main class="weather" id="weather" aria-busy="false">
+        <section class="hero" aria-labelledby="place-name">
+          <div class="hero__head">
+            <div class="hero__place">
+              <p class="eyebrow">Current weather</p>
+              <h1 id="place-name">Loading…</h1>
+              <p class="hero__meta" id="place-meta">Finding your sky</p>
+            </div>
+            <div class="hero__clock">
+              <span class="hero__time" id="local-time">--:--:--</span>
+              <span class="hero__date" id="local-date"></span>
+            </div>
+          </div>
+
+          <div class="hero__body">
+            <div class="hero__main">
+              <div class="hero__icon-wrap" aria-hidden="true">
+                <span class="hero__icon" id="current-icon">⛅</span>
+              </div>
+              <div class="hero__temp">
+                <span id="current-temp">—</span><span class="hero__unit" id="temp-unit">°C</span>
+              </div>
+              <div class="hero__desc">
+                <p class="hero__condition" id="condition">Fetching live conditions…</p>
+                <p class="hero__feels" id="feels">Feels like —</p>
+                <p class="hero__range" id="range">H —° · L —°</p>
+              </div>
+            </div>
+
+            <div class="hero__chart" id="hero-chart" hidden>
+              <div class="hero__chart-head">
+                <span>Next 24 hours</span>
+                <span class="hero__chart-range" id="chart-range"></span>
+              </div>
+              <div class="hero__chart-body" id="chart-svg"></div>
+            </div>
+          </div>
+
+          <div class="hero__foot">
+            <div class="hero__status">
+              <span class="hero__updated" id="updated">Fetching live weather…</span>
+              <span class="hero__next" id="next-refresh"></span>
+            </div>
+            <button type="button" class="refresh" id="refresh-btn" title="Refresh now">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                <path d="M21 3v6h-6" />
+              </svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="details" id="details" aria-label="Current conditions"></section>
+
+        <section class="panel">
+          <div class="panel__head">
+            <div>
+              <p class="eyebrow">Forecast</p>
+              <h2>Next 24 hours</h2>
+            </div>
+            <span class="panel__hint">Local time</span>
+          </div>
+          <div class="hourly" id="hourly"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel__head">
+            <div>
+              <p class="eyebrow">Outlook</p>
+              <h2>7-day forecast</h2>
+            </div>
+            <span class="panel__hint" id="week-range"></span>
+          </div>
+          <ul class="daily" id="daily"></ul>
+        </section>
+      </main>
+
+      <footer class="foot">
+        Live data from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>
+        <span aria-hidden="true">·</span> refreshes automatically every hour
+      </footer>
+    </div>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
